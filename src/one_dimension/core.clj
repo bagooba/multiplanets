@@ -1,10 +1,11 @@
 (ns one-dimension.core)
-
-(def G 1)
-(def M 1)
-(def m 1)
-(def r 200)
-(def h (bigdec 40))
+; All numbers are divided by 1 billion
+(def scale 1E-9)
+(def G (* 6.67E-11 scale))
+(def M (* 1.98E30 scale))
+(def m (* 5.97E24 scale))
+(def r (* 149.6E9 scale))
+(def h (bigdec 10))
 
 (defn force [M m r p] 
   (let [r (double r)] 
@@ -29,6 +30,6 @@
     {:x x :y y :vx vx :vy vy :t t}))
 
 ;(take-while check-state (iterate update {:r 1 :v 2 :t 1}))
-;(def results (take 5 (iterate update {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
-;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
-;(/ (reduce + radii5) 5)
+(def results (take 500 (iterate update {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
+(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
+(/ (reduce + radii5) 500)
