@@ -1,11 +1,13 @@
 (ns one-dimension.core)
 
-(def G 1)
-(def M 10)
-(def m 1)
-(def h (bigdec 40))
-(def sa 250)
-(def e 0.5)
+(def h 10N)
+(def scale 1E-9)
+(def G (* 6.67E-11 scale))
+(def M (* 1.98E30 scale))
+(def m (* 5.97E24 scale))
+(def r (* 149.6E9 scale))
+(def e 0.0167)
+(def sa (/ r (+ e 1)))
 
 (defn force [M m r p] 
   (let [r (double r)] 
