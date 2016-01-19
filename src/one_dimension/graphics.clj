@@ -5,7 +5,7 @@
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
+  (q/frame-rate 1)
   ; Set color mode to HSB (HSV) instead of default RGB.
   ;(q/color-mode :hsb)
   ; setup function returns initial state. It contains
@@ -21,7 +21,8 @@
   (q/fill 255 255 0)
   (let [x (state :x) 
         y (state :y)]
-    ; Move origin point to the center of the sketch.
+(q/text (str "x: " x " :vx " (state :vx) " y: " y " vy: " (state :vy)) 20 20    )    
+; Move origin point to the center of the sketch.
     (q/ellipse (/ (q/width) 2) (/ (q/height) 2) 70 70)
     (q/with-translation [(/ (q/width) 2)
                          (/ (q/height) 2)]
