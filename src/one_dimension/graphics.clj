@@ -9,10 +9,9 @@
   ; Set color mode to HSB (HSV) instead of default RGB.
   ;(q/color-mode :hsb)
   ; setup function returns initial state. It contains
- {:x g/r :y 0 :vx 0 :vy (g/initial-velo g/M g/r) :t 0})
+ (let [x (g/init-r g/sa g/e)] 
+   {:x x :y 0 :vx 0 :vy (g/init-v g/M g/m x g/sa) :t 0} ))
 
-(defn update-state [state]
-   (g/update state))
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
@@ -27,15 +26,21 @@
                          (/ (q/height) 2)]
       ; Draw the planet.
       (q/fill 0 0 255)
-      (q/ellipse x y 30 30))))
+      (q/ellipse x y 30 30))
+    
+      (q/fill 255 255 0)  
+      (q/text (str "x:  " x) 5 20)
+      (q/text (str "vx: " (state :vx)) 5 30)
+      (q/text (str "y:  " y) 5 40)
+      (q/text (str "vy: " (state :vy)) 5 50)))
 
 (q/defsketch euler
   :title "Orbiting Objects"
-  :size [500 500]
+  :size [800 800]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
-  :update g/update
+  :update g/update-state
   :draw draw-state
   :features [:keep-on-top]
   ; This sketch uses functional-mode middleware.
