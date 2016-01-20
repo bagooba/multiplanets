@@ -17,12 +17,17 @@
 (defn calc-radii [x y] (Math/sqrt (+ (* x x) (* y y))))
 (defn calc-velo [v a] (+ v (* a h)))
 (defn init-v [M m r sa] (Math/sqrt (* (* G (+ M m)) (- (/ 2 r) (/ 1 sa)))))
-(defn init-r [sa e] (* sa (+ 1 e)))
+(defn init-p [sa e] (* sa (+ 1 e)))
 (defn calc-kepler2 [x y vx vy] (* (Math/sqrt (+ (* x x) (* y y))) (Math/sqrt (+ (* vx vx) (* vy vy)))))
-(defn calc-speed [vy vx] (Math/sqrt (+ (* vy vy) (* vx vx))))
+(defn calc-speed [vx vy] (Math/sqrt (+ (* vy vy) (* vx vx))))
+
+(defn check-min [state]
+    (> (state :cmis) (state :s)))
+(defn check-max [state]
+  (< (state :cmas) (state :s)))
 
 (defn update-state [state] 
-  (let [{x :x y :y t :t vx :vx vy :vy} state 
+  (let [{x :x y :y t :t vx :vx vy :vy k2 :k2 s :s cmis :cmis cmas :cmas} state 
          t (bigdec (+ t h) ) 
          r (calc-radii x y)
          ax (calc-accel r x) 
@@ -32,16 +37,17 @@
          y (calc-position y vy) 
          x (calc-position x vx)
          k2 (calc-kepler2 x y vx vy)
-         s (calc-speed vy vx)] 
-    {:x x :y y :vx vx :vy vy :t t :k2 k2 :s s}))
+         s (calc-speed vx vy)
+         cmis (min s cmis)
+         cmas (max s cmas)] 
+    {:x x :y y :vx vx :vy vy :t t :k2 k2 :s s :cmis cmis :cmas cmas}))
 
-
+(def current-map (let [x (init-p sa e) 
+                       vy (init-v M m x sa)] 
+                                            {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :cmis vy :cmas vy}) )
 ;(take-while check-state (iterate update-state {:r 1 :v 2 :t 1}))
-;(def results (take 5 (iterate update-state {-state:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
-;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
-;(/ (reduce + radii5) 5)
 (def kepler-2 (map :k2 (take 5 
-                    (iterate update-state (let [x (init-r sa e)
+                    (iterate update-state (let [x (init-p sa e)
                                                 vy (init-v M m x sa)] 
-                                            {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) }) ))) )
+                                            {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :cmis vy :cmas vy}) ))) )
 (/ (reduce + kepler-2) 5)
