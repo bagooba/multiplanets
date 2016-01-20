@@ -16,6 +16,7 @@
 (defn calc-velo [v a] (+ v (* a h)))
 (defn init-v [M m r sa] (Math/sqrt (* (* G (+ M m)) (- (/ 2 r) (/ 1 sa)))))
 (defn init-r [sa e] (* sa (+ 1 e)))
+(defn calc-kepler2 [x y vx vy] (* (Math/sqrt (+ (* x x) (* y y))) (Math/sqrt (+ (* vx vx) (* vy vy)))))
 
 (defn update-state [state] 
   (let [{x :x y :y t :t vx :vx vy :vy} state 
@@ -26,11 +27,18 @@
          vy (calc-velo vy ay) 
          vx (calc-velo vx ax)
          y (calc-position y vy) 
-         x (calc-position x vx)] 
-    {:x x :y y :vx vx :vy vy :t t}))
+         x (calc-position x vx)
+         k2 (calc-kepler2 x y vx vy)] 
+    {:x x :y y :vx vx :vy vy :t t :k2 k2}))
 
 
 ;(take-while check-state (iterate update {:r 1 :v 2 :t 1}))
 ;(def results (take 5 (iterate update {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
 ;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
 ;(/ (reduce + radii5) 5)
+(def kepler-2 (map :k2 (take 5 
+                    (iterate update-state (let [x (init-p sa e)
+                                                vy (init-v M m x sa)] 
+                                            {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :cmis vy :cmas vy}) ))) )
+(/ (reduce + kepler-2) 5)
+
