@@ -1,6 +1,6 @@
 (ns one-dimension.core)
 
-(def h 10N)
+(def h 1N)
 (def scale 1E-9)
 (def G (* 6.67E-11 scale))
 (def M (* 1.98E30 scale))
@@ -24,9 +24,9 @@
 (defn calc-max-speed [s cmas]  (max s cmas))
 
 (defn check-min [state]
-    (> (state :cmis) (state :s)))
+  (false? (< (state :cmis) (state :s))))
 (defn check-max [state]
-  (< (state :cmas) (state :s)))
+  (false? (> (state :cmas) (state :s))))
 
 (defn update-state [state] 
   (let [{x :x y :y t :t vx :vx vy :vy k2 :k2 s :s cmis :cmis cmas :cmas} state 
@@ -53,4 +53,4 @@
                                                 vy (init-v M m x sa)] 
                                            {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :cmis vy :cmas vy}) ))) )
 (/ (reduce + kepler-2) 5)
-
+filter
