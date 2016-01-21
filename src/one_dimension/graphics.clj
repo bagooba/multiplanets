@@ -5,13 +5,13 @@
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
+  (q/frame-rate 100)
   ; Set color mode to HSB (HSV) instead of default RGB.
   ;(q/color-mode :hsb)
   ; setup function returns initial state. It contains
- (let [x (g/init-r g/sa g/e)
+ (let [x (g/init-p g/sa g/e)
        vy (g/init-v g/M g/m x g/sa) ] 
-   {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy)}))
+   {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :maxs vy}))
 
 
 (defn draw-state [state]
