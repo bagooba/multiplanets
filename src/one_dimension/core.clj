@@ -16,7 +16,8 @@
 (defn calc-radii [x y] (Math/sqrt (+ (* x x) (* y y))))
 (defn calc-velo [v a] (+ v (* a h)))
 (defn init-v [M m r sa] (Math/sqrt (* (* G (+ M m)) (- (/ 2 r) (/ 1 sa)))))
-(defn init-p [sa e] (* sa (+ 1 e))) (defn calc-kepler2 [x y vx vy] (* (Math/sqrt (+ (* x x) (* y y))) (Math/sqrt (+ (* vx vx) (* vy vy)))))
+(defn init-p [sa e] (* sa (+ 1 e))) 
+(defn calc-kepler2 [x y vx vy] (* (Math/sqrt (+ (* x x) (* y y))) (Math/sqrt (+ (* vx vx) (* vy vy)))))
 (defn calc-speed [vx vy] (Math/sqrt (+ (* vx vx) (* vy vy))))
 (defn calc-max-speed [s maxs] (max s maxs))
 
@@ -35,8 +36,8 @@
          maxs (calc-max-speed s maxs)]
     {:x x :y y :vx vx :vy vy :t t :k2 k2 :r r :s s :maxs maxs}))
 
-;(take-while check-state (iterate update {:r 1 :v 2 :t 1}))
-;(def results (take 5 (iterate update {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
+;(take-while check-state (iterate update-state {:r 1 :v 2 :t 1}))
+;(def results (take 5 (iterate update-state {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
 ;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
 ;(/ (reduce + radii5) 5)
 
@@ -44,4 +45,3 @@
   (let [x (init-p sa e) 
         vy (init-v M m x sa)] 
      {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :r x :s vy :maxs vy}))
-

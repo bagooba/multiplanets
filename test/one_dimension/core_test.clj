@@ -21,3 +21,17 @@
                                                 vy (init-v m m x sa)] 
                                             {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :r x :s vy :maxs vy :mins vy})))))
 (/ (reduce + kepler-2) 50000)
+
+(defn calc-total-energy [state] 
+  (map #(- (/ (* m (% :s) (% :s)) 2) (/ (* G M m) (% :r)))
+       (take 5 (iterate update-state state))))
+
+(defn check-semiminor [state] 
+  (false? (> 0 (state :vy))))
+(def semiminor (last (map :y (take-while check-semiminor (iterate update-state initial-state)))))
+(def origin-y 0)
+(def origin-x (last (map :x (take-while check-semiminor (iterate update-state initial-state)))))
+(def semimajor radii)
+(defn check-k1-ellipse [state]
+  (+ (/ (* (- (state :x) origin-x) (- (state :x) origin-x)) (* semimajor semimajor)) (/ (* (state :y) (state :y)) (* semiminor semiminor)))) 
+(def check-k1-error (/ (- 1 (check-k1-ellipse (first (iterate update-state initial-state)))) 1))
