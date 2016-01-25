@@ -3,7 +3,7 @@
 (def G 1)
 (def M 10)
 (def m 1)
-(def h (bigdec 1))
+(def h (bigdec 40))
 (def sa 250)
 (def e 0.5)
 
@@ -22,7 +22,7 @@
 (defn calc-max-speed [s maxs] (max s maxs))
 
 (defn update-state [state] 
-  (let [{x :x y :y t :t vx :vx vy :vy k2 :k2 r :r s :s maxs :maxs mins :mins} state 
+  (let [{x :x y :y t :t vx :vx vy :vy k2 :k2 r :r s :s maxs :maxs revolution-coord :revolution-coord} state 
          t (bigdec (+ t h) ) 
          r (calc-radii x y)
          ax (calc-accel r x) 
@@ -34,12 +34,15 @@
          k2 (calc-kepler2 x y vx vy)
          s (calc-speed vx vy)
          maxs (calc-max-speed s maxs)]
-    {:x x :y y :vx vx :vy vy :t t :k2 k2 :r r :s s :maxs maxs}))
+    {:x x :y y :vx vx :vy vy :t t :k2 k2 :r r :s s :maxs maxs :revolution-coord revolution-coord}))
 
 ;(take-while check-state (iterate update-state {:r 1 :v 2 :t 1}))
 ;(def results (take 5 (iterate update-state {:x r :y 0 :vx 0 :vy (initial-velo M r) :t 0})) )
 ;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
 ;(/ (reduce + radii5) 5)
+
+(defn check-max [state]
+  (false? (< (state :s) (state :maxs))))
 
 (def initial-state 
   (let [x (init-p sa e) 

@@ -1,7 +1,9 @@
 (ns one-dimension.graphics
   (:require [quil.core :as q]
             [quil.middleware :as m]
-            [one-dimension.core :as g]))
+            [one-dimension.core :as g]
+            [one-dimension.core-test :as c]))
+
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
@@ -10,9 +12,10 @@
   ;(q/color-mode :hsb)
   ; setup function returns initial state. It contains
  (let [x (g/init-p g/sa g/e)
-       vy (g/init-v g/M g/m x g/sa) ] 
-   {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :maxs vy}))
-
+       vy (g/init-v g/M g/m x g/sa) 
+       period (/ (last (map :t (take-while g/check-max (iterate g/update-state g/initial-state)))) 20)
+       coord (map (juxt :x :y) (take period (iterate g/update-state g/initial-state)))] 
+   {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :maxs vy :revolution-coord coord}))
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
@@ -27,7 +30,12 @@
                          (/ (q/height) 2)]
       ; Draw the planet.
       (q/fill 0 0 255)
-      (q/ellipse x y 30 30))
+      (q/ellipse x y 30 30)
+      (doseq [point (:revolution-coord state)] 
+             (q/stroke 0 255 255)
+             (q/stroke-weight 3)
+             (q/point (first point) (second point))
+             (q/no-stroke)) )
     
       (q/fill 255 255 0)  
       (q/text (str "x:  " x) 5 20)

@@ -6,9 +6,6 @@
   (testing "update beginning state"
     (is (= {:r 3.02 :v 3.01 :t 1.01} (update {:r 1 :v 2 :t 1})))))
 
-(defn check-max [state]
-  (false? (< (state :s) (state :maxs)))) 
-
 (def k3constant (/ (* Math/PI Math/PI 4) (* G M)))
 (def period (* 2 (last (map :t (take-while check-max (iterate update-state initial-state))))))
 (def radii (/ (+ (first (map :r (iterate update-state initial-state))) (last (map :r (take-while check-max (iterate update-state initial-state))))) 2))
@@ -24,7 +21,7 @@
 
 (defn calc-total-energy [state] 
   (map #(- (/ (* m (% :s) (% :s)) 2) (/ (* G M m) (% :r)))
-       (take 5 (iterate update-state state))))
+       (take 500000 (iterate update-state state))))
 
 (defn check-semiminor [state] 
   (false? (> 0 (state :vy))))
