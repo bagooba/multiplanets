@@ -6,12 +6,16 @@
   (testing "update beginning state"
     (is (= {:r 3.02 :v 3.01 :t 1.01} (update {:r 1 :v 2 :t 1})))))
 
-(def k3constant (/ (* Math/PI Math/PI 4) (* G M)))
-(def period (* 2 (last (map :t (take-while check-max (iterate update-state initial-state))))))
-(def radii (/ (+ (first (map :r (iterate update-state initial-state))) (last (map :r (take-while check-max (iterate update-state initial-state))))) 2))
+(defn check-max [state]
+  (false? (< (state :s) (state :maxs))))
 
-(def check-kepler3-error (/ (- (* period period) (* k3constant radii radii radii)) (* period period) ))
-(def check-kepler3-error2 (/ (- (* k3constant radii radii radii) (* period period)) (* k3constant radii radii radii)))
+(def k3constant (/ (* Math/PI Math/PI 4) (* G M)))
+(defn period [] (* 2 (last (map :t (take-while check-max (iterate update-state initial-state))))))
+(defn radii [] (/ (+ (first (map :r (iterate update-state initial-state)))
+                 (last (map :r (take-while check-max (iterate update-state initial-state))))) 2))
+
+(defn check-kepler3-error [] (/ (- (* (period) (period)) (* k3constant (radii) (radii) (radii))) (* (period) (period))))
+(defn check-kepler3-error2 [] (/ (- (* k3constant (radii) (radii) (radii)) (* (period) (period))) (* k3constant (radii) (radii) (radii))))
 
 (def kepler-2 (map :k2 (take 50000 
                     (iterate update-state (let [x (init-p sa e)
@@ -31,4 +35,4 @@
 (def semimajor radii)
 (defn check-k1-ellipse [state]
   (+ (/ (* (- (state :x) origin-x) (- (state :x) origin-x)) (* semimajor semimajor)) (/ (* (state :y) (state :y)) (* semiminor semiminor)))) 
-(def check-k1-error (/ (- 1 (check-k1-ellipse (first (iterate update-state initial-state)))) 1))
+#_(def check-k1-error (/ (- 1 (check-k1-ellipse (first (iterate update-state initial-state)))) 1))

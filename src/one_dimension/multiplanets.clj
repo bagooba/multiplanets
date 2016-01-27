@@ -7,6 +7,8 @@
 (defn calc-position [p v] (+ p (* v h)))
 (defn calc-velo [v a] (+ v (* a h)))
 (defn calc-radii [x y] (Math/sqrt (+ (* x x) (* y y))))
+(defn calc-speed [vx vy] (Math/sqrt (+ (* vx vx) (* vy vy))))
+(defn calc-max-speed [s maxs] (max s maxs))
 
 (def earth {:y 0 :vx 0 :t 0 :m 70 :semi-ma 100 :ecc 0 :type :planet})
 (def mars {:y 0 :vx 0 :t 0 :m 7 :semi-ma 340 :ecc 0 :type :planet}) 
@@ -14,9 +16,11 @@
 (def start-system [earth mars sun])
 
 (defn init-planet [sun p] 
-  (let [x (* (p :semi-ma) (+ 1 (p :ecc)))]
+  (let [x (* (p :semi-ma) (+ 1 (p :ecc)))
+        vy (Math/sqrt (* (* G (+ (sun :m) (p :m))) (- (/ 2 x) (/ 1 (p :semi-ma)))))]
     (assoc p :x x
-             :vy (Math/sqrt (* (* G (+ (sun :m) (p :m))) (- (/ 2 x) (/ 1 (p :semi-ma))))))))
+             :vy vy
+             :r x)))
 
 
 (defn calc-force [other-m this-m r p] 
@@ -37,9 +41,9 @@
           [0 0] 
           (for [other others] (total-accel this other))))
 
-(defn update-planet [planet others] 
+(defn update-planet [others planet] 
   (if (= (:type planet) :planet)
-      (let [{x :x y :y t :t vx :vx vy :vy m :m semi-ma :semi-ma ecc :ecc type :type} planet 
+      (let [{x :x y :y t :t vx :vx vy :vy r :r m :m semi-ma :semi-ma ecc :ecc type :type} planet 
           t (bigdec (+ t h)) 
           r (calc-radii x y)
           a (calc-total-accel planet others)
@@ -47,12 +51,12 @@
           vx (calc-velo vx (first a))
           y (calc-position y vy) 
           x (calc-position x vx)]
-      {:x x :y y :t t :vx vx :vy vy :m m :semi-ma semi-ma :ecc ecc :type type})
+      {:x x :y y :t t :vx vx :vy vy :r r :m m :semi-ma semi-ma :ecc ecc :type type})
       planet))
 
 (defn update-system [system]
     (map #(let [others (filter (fn [planet] (not= planet %)) system)] 
-            (update-planet % others)) system))
+            (update-planet others %)) system))
 (defn setup-system [] 
   (let [sun (first (filter #(= (% :type) :sun) start-system))
         planets (filter #(not= (% :type) :sun) start-system)

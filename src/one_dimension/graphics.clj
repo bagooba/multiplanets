@@ -1,20 +1,18 @@
 (ns one-dimension.graphics
   (:require [quil.core :as q]
             [quil.middleware :as m]
-            [one-dimension.core :as g]
-            [one-dimension.core-test :as c]))
+            [one-dimension.core :as g]))
 
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 100)
+  (q/frame-rate 20)
   ; Set color mode to HSB (HSV) instead of default RGB.
   ;(q/color-mode :hsb)
   ; setup function returns initial state. It contains
  (let [x (g/init-p g/sa g/e)
        vy (g/init-v g/M g/m x g/sa) 
-       period (/ (last (map :t (take-while g/check-max (iterate g/update-state g/initial-state)))) 20)
-       coord (map (juxt :x :y) (take period (iterate g/update-state g/initial-state)))] 
+       coord (map (juxt :x :y) (take-while g/check-U (iterate g/update-ellipse g/initial-point)))] 
    {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :s vy :maxs vy :revolution-coord coord}))
 
 (defn draw-state [state]

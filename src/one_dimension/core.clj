@@ -3,15 +3,15 @@
 (def G 1)
 (def M 10)
 (def m 1)
-(def h (bigdec 40))
+(def h (bigdec 10))
 (def sa 250)
 (def e 0.5)
 
-(defn force [M m r p] 
+(defn calc-force [M m r p] 
   (let [r (double r)] 
     (- (/ (* G M m p) (* r r r)))))
 
-(defn calc-accel [r p] (/ (force M m r p) m))
+(defn calc-accel [r p] (/ (calc-force M m r p) m))
 (defn calc-position [p v] (+ p (* v h)))
 (defn calc-radii [x y] (Math/sqrt (+ (* x x) (* y y))))
 (defn calc-velo [v a] (+ v (* a h)))
@@ -41,10 +41,26 @@
 ;(def radii5 (map #(Math/sqrt (+ (* (% :x) (% :x)) (* (% :y) (% :y)))) results))
 ;(/ (reduce + radii5) 5)
 
-(defn check-max [state]
-  (false? (< (state :s) (state :maxs))))
-
 (def initial-state 
   (let [x (init-p sa e) 
         vy (init-v M m x sa)] 
      {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :r x :s vy :maxs vy}))
+
+(def k 0.01)
+(defn calc-elliptical-radius [sa e U] 
+  (/ (* sa (- 1 (* e e))) (- 1  (* e (Math/cos U)))))
+
+(defn update-ellipse [ellipse]
+  (let [{U :U r :r x :x y :y} ellipse
+        U (+ U k)
+        r (calc-elliptical-radius sa e U)
+        x (* r (Math/cos U))
+        y (* r (Math/sin U))]
+    {:U U :r r :x x :y y}))
+
+(defn check-U [ellipse]
+  (false? (> (ellipse :U) (* 2 Math/PI) )))
+
+(def initial-point
+  (let [r (calc-elliptical-radius sa e 0)]
+    {:U 0 :r r :x r :y 0}))
