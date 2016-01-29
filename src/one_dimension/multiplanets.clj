@@ -1,8 +1,8 @@
 (ns one-dimension.multiplanets
     (:require [quil.core :as q]
             [quil.middleware :as m]))
-(def G 1)
-(def h (bigdec 10))
+(def G 0.0000474292)
+(def h (bigdec 1))
 
 (defn calc-position [p v] (+ p (* v h)))
 (defn calc-velo [v a] (+ v (* a h)))
@@ -10,10 +10,17 @@
 (defn calc-speed [vx vy] (Math/sqrt (+ (* vx vx) (* vy vy))))
 (defn calc-max-speed [s maxs] (max s maxs))
 
-(def earth {:y 0 :vx 0 :t 0 :m 70 :semi-ma 100 :ecc 0 :type :planet})
-(def mars {:y 0 :vx 0 :t 0 :m 7 :semi-ma 340 :ecc 0 :type :planet}) 
-(def sun {:x 0 :y 0 :vy 0 :vx 0 :t 0 :m 700 :semi-ma 0 :ecc 0 :type :sun})
-(def start-system [earth mars sun])
+(def mercury {:y 0 :vx 0 :t 0 :m 0.553 :semi-ma 9.675 :ecc 0.2056 :type :planet})
+(def venus {:y 0 :vx 0 :t 0 :m 08.15 :semi-ma 18.075 :ecc 0.0068 :type :planet})
+(def earth {:y 0 :vx 0 :t 0 :m 10 :semi-ma 25 :ecc 0.0934 :type :planet})
+(def mars {:y 0 :vx 0 :t 0 :m 1.07 :semi-ma 38.1 :ecc 0.0167 :type :planet}) 
+(def jupiter {:y 0 :vx 0 :t 0 :m 3178.3 :semi-ma 130.075 :ecc 0.0484 :type :planet})
+(def saturn {:y 0 :vx 0 :t 0 :m 951.59 :semi-ma 238.425 :ecc 0.0542 :type :planet})
+(def uranus {:y 0 :vx 0 :t 0 :m 145.36 :semi-ma 479.775 :ecc 0.0472 :type :planet})
+(def neptune {:y 0 :vx 0 :t 0 :m 171.147 :semi-ma 751.725 :ecc 0.0472 :type :planet})
+(def sun {:x 0 :y 0 :vy 0 :vx 0 :t 0 :m 3330000 :semi-ma 0 :ecc 0 :type :sun})
+(def start-system [mercury venus earth mars jupiter saturn uranus neptune sun])
+(def planets [mercury venus earth mars jupiter saturn uranus neptune])
 
 (defn init-planet [sun p] 
   (let [x (* (p :semi-ma) (+ 1 (p :ecc)))
@@ -73,7 +80,7 @@
   (q/background 0)
   ; Set star color.
   (q/fill 255 255 0)
-  (q/ellipse (/ (q/width) 2) (/ (q/height) 2) 70 70)
+  (q/ellipse (/ (q/width) 2) (/ (q/height) 2) 35 35)
   ; Move origin point to the center of the sketch.
       (q/with-translation [(/ (q/width) 2)
                            (/ (q/height) 2)]
@@ -81,11 +88,11 @@
          (let [x (planet :x) 
                y (planet :y)]
       (q/fill 0 0 255)
-      (q/ellipse x y 30 30)))))
+      (q/ellipse x y 15 15)))))
 
 (q/defsketch euler
   :title "Solar System"
-  :size [800 800]
+  :size [1500 900]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
