@@ -1,7 +1,7 @@
 (ns one-dimension.multiplanets
     (:require [quil.core :as q]
             [quil.middleware :as m]))
-(def G 0.0000474292)
+(def G 0.00011857303)
 (def h (bigdec 1))
 
 (defn calc-position [p v] (+ p (* v h)))
@@ -12,8 +12,8 @@
 
 (def mercury {:y 0 :vx 0 :t 0 :m 0.553 :semi-ma 9.675 :ecc 0.2056 :type :planet})
 (def venus {:y 0 :vx 0 :t 0 :m 08.15 :semi-ma 18.075 :ecc 0.0068 :type :planet})
-(def earth {:y 0 :vx 0 :t 0 :m 10 :semi-ma 25 :ecc 0.0934 :type :planet})
-(def mars {:y 0 :vx 0 :t 0 :m 1.07 :semi-ma 38.1 :ecc 0.0167 :type :planet}) 
+(def earth {:y 0 :vx 0 :t 0 :m 10 :semi-ma 25 :ecc 0.0167 :type :planet})
+(def mars {:y 0 :vx 0 :t 0 :m 1.07 :semi-ma 38.1 :ecc 0.0934 :type :planet}) 
 (def jupiter {:y 0 :vx 0 :t 0 :m 3178.3 :semi-ma 130.075 :ecc 0.0484 :type :planet})
 (def saturn {:y 0 :vx 0 :t 0 :m 951.59 :semi-ma 238.425 :ecc 0.0542 :type :planet})
 (def uranus {:y 0 :vx 0 :t 0 :m 145.36 :semi-ma 479.775 :ecc 0.0472 :type :planet})
