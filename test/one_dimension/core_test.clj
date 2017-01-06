@@ -19,13 +19,13 @@
 
 (def kepler-2 (map :k2 (take 50000 
                     (iterate update-state (let [x (init-p sa e)
-                                                vy (init-v m m x sa)] 
+                                                vy (init-v M m x sa)] 
                                             {:x x :y 0 :vx 0 :vy vy :t 0 :k2 (* x vy) :r x :s vy :maxs vy :mins vy})))))
 (/ (reduce + kepler-2) 50000)
 
 (defn calc-total-energy [state] 
   (map #(- (/ (* m (% :s) (% :s)) 2) (/ (* G M m) (% :r)))
-       (take 500000 (iterate update-state state))))
+       (take 2463 (iterate update-state initial-state))))
 
 (defn check-semiminor [state] 
   (false? (> 0 (state :vy))))

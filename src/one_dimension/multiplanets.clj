@@ -92,7 +92,7 @@
 
 (q/defsketch euler
   :title "Solar System"
-  :size [1500 900]
+  :size [1600 900]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-system is called on each iteration before draw-state.
